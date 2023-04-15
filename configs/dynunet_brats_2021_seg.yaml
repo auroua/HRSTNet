@@ -1,0 +1,79 @@
+_BASE_: "./dataset_path.yaml"
+MODEL:
+  NAME: "dynunet"
+  NORM: "instance"
+  IN_CHANNEL: 4
+  OUT_CHANNEL: 3
+  WEIGHTS: "/home/albert_wei/fdisk_c/train_output_medical_2023/BraTS_2021/optimized_unet/model_best.pth"
+  USE_CHECKPOINT: False
+  DYNUNET:
+    KERNELS: [ [ 3, 3, 3 ], [ 3, 3, 3 ], [ 3, 3, 3 ], [ 3, 3, 3 ], [ 3, 3, 3 ], [ 3, 3, 3 ], [ 3, 3, 3 ] ]
+    STRIDES: [ [ 1, 1, 1 ], [ 2, 2, 2 ], [ 2, 2, 2 ], [ 2, 2, 2 ], [ 2, 2, 2 ], [ 2, 2, 2 ], [ 2, 2, 2 ] ]
+    FILTERS: [ 64, 96, 128, 192, 256, 384, 512 ]
+    DIM: 3
+    DEEP_SUPERVISION: True
+    DEEP_SUPR_NUM: 2
+    RES_BLOCK: True
+    MIN_FMAP: 2    # the information related to this parameter has contained in the parameter stride
+    DEPTH: 6       # the information related to this parameter has contained in the parameter stride
+
+
+INPUT:
+  ORIENTATION: "RSA"
+  RAND_CROP:
+    SAMPLES: 1
+    POS: 1
+    NEG: 1
+    ROI:
+      X: 128
+      Y: 128
+      Z: 128
+  RAND:
+    FLIP_AXIS_PROB: 0.2
+    ROTATE90_PROB: 0.2
+    SCALE_INTENSITY_PROB: 1.0
+    SHIFT_INTENSITY_PROB: 1.0
+  FORMAT: "NII"
+
+# NAME: BraTS_2021, BraTS_2021_MONAI, BraTS_2021_VT_UNET
+DATASETS:
+  JSON: "dataset_0.json"
+  DATA_DIR: ""
+  DATASET_TYPE: "BraTS_2021"
+  NAME: "BraTS_2021_VT_UNET"
+#  JSON: "dataset_0_monai.json"
+#  NAME: "BraTS_2021_MONAI"
+  TYPE: "CACHE"  # CACHE
+  CACHE:
+    NUM: 834
+    RATE: 0.1
+  TEST_TYPE: "validation"
+
+DATALOADER:
+  TRAIN_WORKERS: 4
+  TEST_WORKERS: 2
+
+SOLVER:
+  EPOCHS: 300
+  BATCH_SIZE: 1
+  SW_BATCH_SIZE_TRAIN: 1
+  SW_BATCH_SIZE_TEST: 4
+  LR: 0.0003
+  WEIGHT_DEACY: 1e-5
+  MOMENTUM: 0.99
+  OPTIM_ALGO: "adamw"
+  EVAL_PERIOD: 1
+  DROPOUT_RATE: 0.0
+  INFER_OVERLAP: 0.5
+  LR_SCHEDULE: "warmup_cosine"
+  WARMUP_EPOCHS: 50
+  SMOOTH_DR: 1e-6
+  SMOOTH_NR: 0.0
+  RESUME_CKPT: False
+  RESUME_JIT: False
+  AMP: True
+  LOSS: "BDICE"
+
+OUTPUT_DIR: "/home/albert_wei/fdisk_c/train_output_medical_2023/BraTS_2021/optimized_unet/"
+SEED: 121
+MODE: "train"    # [train, test]

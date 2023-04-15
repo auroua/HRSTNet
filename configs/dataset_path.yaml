@@ -1,0 +1,6 @@
+DATASETS:
+  DATA_DIR_BRATS_2021: "/home/albert_wei/fdisk_c/train_dataset_Medical/BraTS2021/"
+  DATA_DIR_LIVER: "/home/ljm/Fdisk_A/train_datasets/train_datasets_medical/MSD/Task03_Liver/"
+  DATA_DIR_PANCREAS: "/home/ljm/Fdisk_A/train_datasets/train_datasets_medical/MSD/Task07_Pancreas/"
+  DATA_DIR_SPLEEN: "/home/ljm/Fdisk_A/train_datasets/train_datasets_medical/MSD/Task09_Spleen/"
+  DATA_DIR_ABDOMEN: "/home/ljm/Fdisk_A/train_datasets/train_datasets_medical/2015_Segmentation_Cranial Vault Challenge/Abdomen/RawData/"

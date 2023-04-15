@@ -1,0 +1,33 @@
+_BASE_: "./unetr_msd_base.yaml"
+MODEL:
+  OUT_CHANNEL: 3
+  WEIGHTS: ""
+
+INPUT:
+  SPACING:
+    X: 1.0
+    Y: 1.0
+    Z: 1.0
+  SCALE_INTENSITY:
+    ORIGINAL_MIN: -17.0
+    ORIGINAL_MAX: 201.0
+  RAND_CROP:
+    ROI:
+      X: 96
+      Y: 96
+      Z: 96
+
+DATASETS:
+  DATA_DIR: ""
+  MSD_TYPE: "Liver"    # Liver, Pancreas, Spleen
+  MSD:
+    # Pancreas: train: 187, val: 187-234, test 234:
+    # Liver: train 87, val: 87-109, test: 109
+    # Spleen: 29, 35,
+    TRAIN_NUM: 87
+    VAL_NUM: 109
+    TEST_NUM: 109
+
+OUTPUT_DIR: "/home/ljm/Fdisk_A/train_outputs/train_output_medical_2022_8/hrstnet/brats_2021_vt_unet_stages_4_epochs_300_vt_unet_preprocess/"
+MODE: "train"    # [train, test]
+SEED: 666

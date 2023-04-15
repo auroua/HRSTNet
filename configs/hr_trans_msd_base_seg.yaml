@@ -1,0 +1,87 @@
+_BASE_: "./dataset_path.yaml"
+MODEL:
+  NAME: "hr_trans"
+  NORM: "instance"
+  IN_CHANNEL: 1
+  # liver=3, Pancreas=3, Spleen=2
+  DROPOUT_RATE: 0.0
+  ATTN_DROPOUT_RATE: 0.0
+  USE_CHECKPOINT: False
+  SSL_PRETRAINED: False
+  SWIN:
+    DEPTH: [2, 2, 2, 2]
+    NUM_HEADS: [3, 6, 12, 24]
+    SPATIAL_DIMS: 3
+    WINDOW_SIZE: 7
+    DROP_PATH_RATE: 0.2
+    MLP_RATE: 4.0
+    QKV_BIAS: True
+    PATCH_SIZE: 4
+#  HR_TRANS:
+#    USING_DS_STEM: False
+#    STAGE_NUM: 4
+#    FUSION_TYPE: "res_conv"     # fc, res_conv
+#    DROPOUT_RATE: 0.2
+
+INPUT:
+  ORIENTATION: "RSA"
+  # Pancreas: z: 2.5, x: 0.8, z: 0.8
+  # liver: z: 1, x: 0.7676, z: 0.7676
+  # Spleen: z: 1.6, x: 0.79, z: 0.79
+  SPACING:
+    IMG_MODE: "bilinear"
+    LAB_MODEL: "nearest"
+  # Pancreas: MIN -96, MAX 215
+  # liver: MIN -17, MAX 201
+  # Spleen: MIN -41, MAX 176
+  SCALE_INTENSITY:
+    TARGET_MIN: 0.0
+    TARGET_MAX: 1.0
+  # Pancreas: Z: 40, X: 224, Y: 224 Samples 2
+  # liver: Z: 128, X: 128, Y: 128 Samples 2
+  # Spleen: Z: 64, X: 192, Y: 192 Samples 2
+  RAND_CROP:
+    SAMPLES: 1
+    POS: 1
+    NEG: 1
+  RAND:
+    FLIP_AXIS_PROB: 0.2
+    ROTATE90_PROB: 0.2
+    SCALE_INTENSITY_PROB: 0.1
+    SHIFT_INTENSITY_PROB: 0.1
+  FORMAT: "NII"
+
+DATASETS:
+  NAME: "MSD"
+  DATASET_TYPE: "MSD"
+  TYPE: "CACHE"
+  CACHE:
+    RATE: 0.5
+  TEST_TYPE: "validation"
+
+DATALOADER:
+  TRAIN_WORKERS: 4
+  TEST_WORKERS: 2
+
+SOLVER:
+  EPOCHS: 300
+  BATCH_SIZE: 1
+  SW_BATCH_SIZE_TRAIN: 4
+  SW_BATCH_SIZE_TEST: 4
+  LR: 1e-4
+  WEIGHT_DEACY: 1e-5
+  MOMENTUM: 0.99
+  OPTIM_ALGO: "adamw"
+  EVAL_PERIOD: 10
+  DROPOUT_RATE: 0.0
+  INFER_OVERLAP: 0.5
+  LR_SCHEDULE: "warmup_cosine"
+  WARMUP_EPOCHS: 50
+  SMOOTH_DR: 1e-6
+  SMOOTH_NR: 0.0
+  RESUME_CKPT: False
+  RESUME_JIT: False
+  AMP: True
+  LOSS: "CEDICE"
+
+SEED: 666

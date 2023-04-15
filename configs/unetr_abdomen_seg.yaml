@@ -1,0 +1,82 @@
+_BASE_: "./dataset_path.yaml"
+MODEL:
+  NAME: "unetr"
+  POS_EMBED: "perceptron"
+  NORM: "instance"
+  NUM_HEADS: 12
+  MLP_DIM: 3072
+  HIDDEN_SIZE: 768
+  FEATURE_SIZE: 16
+  IN_CHANNEL: 1
+  OUT_CHANNEL: 14
+  DROPOUT_RATE: 0.0
+#  WEIGHTS: "/home/albert_wei/fdisk_c/train_output_medical/abdomen_seg/default0/unetr_4999.pth"
+  WEIGHTS: ""
+
+INPUT:
+  ORIENTATION: "RSA"
+  SPACING:
+    X: 1.5
+    Y: 1.5
+    Z: 2.0
+    IMG_MODE: "bilinear"
+    LAB_MODEL: "nearest"
+  SCALE_INTENSITY:
+    ORIGINAL_MIN: -175.0
+    ORIGINAL_MAX: 250.0
+    TARGET_MIN: 0.0
+    TARGET_MAX: 1.0
+  RAND_CROP:
+    SAMPLES: 4
+    POS: 1
+    NEG: 1
+    ROI:
+      X: 96
+      Y: 96
+      Z: 96
+  RAND:
+    FLIP_AXIS_PROB: 0.2
+    ROTATE90_PROB: 0.2
+    SCALE_INTENSITY_PROB: 0.1
+    SHIFT_INTENSITY_PROB: 0.1
+  FORMAT: "NII"
+
+DATASETS:
+  JSON: "dataset_0.json"
+  DATA_DIR: ""
+  DATASET_TYPE: "ABDOMEN"
+  NAME: "ABDOMEN"
+  TYPE: "CACHE"
+  CACHE:
+    NUM: 24
+    RATE: 1.0
+  TEST_TYPE: "validation"
+
+DATALOADER:
+  TRAIN_WORKERS: 4
+  TEST_WORKERS: 2
+
+SOLVER:
+  EPOCHS: 5000
+  BATCH_SIZE: 1
+  SW_BATCH_SIZE_TRAIN: 1
+  SW_BATCH_SIZE_TEST: 4
+  LR: 1e-4
+  WEIGHT_DEACY: 1e-5
+  MOMENTUM: 0.99
+  OPTIM_ALGO: "adamw"
+  EVAL_PERIOD: 100
+  DROPOUT_RATE: 0.0
+  INFER_OVERLAP: 0.5
+  LR_SCHEDULE: "warmup_cosine"
+  WARMUP_EPOCHS: 50
+  SMOOTH_DR: 1e-6
+  SMOOTH_NR: 0.0
+  RESUME_CKPT: False
+  RESUME_JIT: False
+  AMP: False
+  LOSS: "CEDICE"
+
+OUTPUT_DIR: "/home/albert_wei/fdisk_c/train_output_medical/abdomen_seg/default1/"
+SEED: 121
+MODE: "train"    # [train, test]

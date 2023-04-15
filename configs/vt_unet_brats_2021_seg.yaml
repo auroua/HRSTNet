@@ -1,0 +1,98 @@
+_BASE_: "./dataset_path.yaml"
+MODEL:
+  NAME: "vt_unet"
+  NORM: "instance"
+  IN_CHANNEL: 4
+  OUT_CHANNEL: 3
+  DROPOUT_RATE: 0.0
+  ATTN_DROPOUT_RATE: 0.0
+  WEIGHTS: ""
+  FEATURE_SIZE: 96
+  USE_CHECKPOINT: False
+  SSL_PRETRAINED: False
+  SWIN:
+    DEPTH: [2, 2, 2, 1]
+    NUM_HEADS: [3, 6, 12, 24]
+    SPATIAL_DIMS: 3
+    WINDOW_SIZE: 7
+    DROP_PATH_RATE: 0.2
+    MLP_RATE: 4.0
+    QKV_BIAS: True
+    PATCH_SIZE: 4
+
+  VT_UNET:
+    DEPTHS: [2, 2, 2, 1]
+    FINAL_UPSAMPLE: "expand_first"
+    FROZEN_STAGES: -1
+
+INPUT:
+  ORIENTATION: "RSA"
+#  SPACING:
+#    X: 1.0
+#    Y: 1.0
+#    Z: 1.0
+#    IMG_MODE: "bilinear"
+#    LAB_MODEL: "nearest"
+#  SCALE_INTENSITY:
+#    ORIGINAL_MIN: -175.0
+#    ORIGINAL_MAX: 250.0
+#    TARGET_MIN: 0.0
+#    TARGET_MAX: 1.0
+  RAND_CROP:
+    SAMPLES: 1
+    POS: 1
+    NEG: 1
+    ROI:
+      X: 128
+      Y: 128
+      Z: 128
+  RAND:
+    FLIP_AXIS_PROB: 0.2
+    ROTATE90_PROB: 0.2
+    SCALE_INTENSITY_PROB: 0.1
+    SHIFT_INTENSITY_PROB: 0.1
+  FORMAT: "NII"
+
+DATASETS:
+  JSON: "dataset_0.json"
+  DATA_DIR: ""
+  DATASET_TYPE: "BraTS_2021"
+  NAME: "BraTS_2021_VT_UNET"
+#  TYPE: "NO_CACHE"  # CACHE
+#  JSON: "dataset_0_monai.json"
+#  DATA_DIR: "/home/albert_wei/fdisk_c/train_dataset_Medical/BraTS2021/"
+#  NAME: "BraTS_2021_MONAI"
+  TYPE: "CACHE"  # CACHE  NO_CACHE
+  CACHE:
+    NUM: 834
+    RATE: 0.1
+  TEST_TYPE: "validation"
+
+DATALOADER:
+  TRAIN_WORKERS: 4
+  TEST_WORKERS: 2
+
+SOLVER:
+  EPOCHS: 300
+  BATCH_SIZE: 1
+  SW_BATCH_SIZE_TRAIN: 1
+  SW_BATCH_SIZE_TEST: 4
+  LR: 1e-4
+  WEIGHT_DEACY: 1e-5
+  MOMENTUM: 0.99
+  OPTIM_ALGO: "adamw"
+  EVAL_PERIOD: 10
+  DROPOUT_RATE: 0.0
+  INFER_OVERLAP: 0.5
+  LR_SCHEDULE: "warmup_cosine"
+  WARMUP_EPOCHS: 50
+  SMOOTH_DR: 1e-6
+  SMOOTH_NR: 0.0
+  RESUME_CKPT: False
+  RESUME_JIT: False
+  AMP: True
+  LOSS: "BDICE"
+
+OUTPUT_DIR: "/home/ljm/Fdisk_A/train_outputs/train_output_medical_2022_8/hrstnet/brats_2021_vt_unet_stages_4_epochs_300_vt_unet_preprocess/"
+SEED: 121
+MODE: "train"    # [train, test]
